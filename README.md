@@ -1,0 +1,57 @@
+# leitstand-robot-contract
+
+The contract between the leitstand backend and the robots: Protobuf messages
+(`leitstand.robot.v1`).
+
+## Layout
+
+```
+proto/leitstand/robot/v1/
+  mission.proto           # mission + dispatch/cancel
+  mission_state.proto     # execution state
+  factsheet.proto         # capability declaration
+  telemetry.proto         # robot telemetry
+```
+
+Generated Python stubs are committed under `gen/`.
+
+## Transport (Zenoh)
+
+The proto defines the messages. This section maps each to a Zenoh key. Keys are
+namespaced under `leitstand/robot/<id>/`, where `<id>` identifies the robot, so
+no message carries a robot id. Payloads are proto canonical JSON.
+
+| Message | Key | Zenoh op |
+|---|---|---|
+| MissionDispatchRequest / Response | `mission/_action/send_goal` | get |
+| CancelRequest | `mission/_action/cancel_goal` | get |
+| pause / resume | `instant/pause`, `instant/resume` | put |
+| MissionState | `mission/state` | put |
+| Factsheet | `factsheet` | get |
+| Pose | `pose` | put |
+| Battery | `battery` | put |
+
+## Conformance
+
+A conforming robot must:
+
+- Reject the entire mission when a stage has an unknown kind or empty waypoints.
+- Treat dispatch as idempotent on `mission_id`: re-dispatching the running
+  mission is acknowledged without re-execution; dispatching a different mission
+  while one is running is rejected.
+- Order `MissionState` frames by `header_id`.
+
+## Versioning
+
+Additive-only within `v1`; a breaking change means `v2`. Enforced by `buf breaking`.
+
+## Development
+
+Requires [buf](https://buf.build).
+
+```
+buf lint
+buf format -d
+buf build
+buf generate    # regenerate gen/ and commit it
+```

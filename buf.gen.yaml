@@ -1,0 +1,9 @@
+version: v2
+plugins:
+  # Python stubs for the robot client (and the backend contract test). Add
+  # ts/cpp/rust plugins when a consumer in that language onboards.
+  - remote: buf.build/protocolbuffers/python:v35.1
+    out: gen/python
+  # Type stubs so mypy/IDEs see real message types.
+  - remote: buf.build/protocolbuffers/pyi:v35.1
+    out: gen/python

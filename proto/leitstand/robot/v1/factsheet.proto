@@ -1,0 +1,43 @@
+// Robot capability declaration, robot -> backend.
+//
+// Fetched by the backend to pre-validate a mission before dispatch.
+
+syntax = "proto3";
+
+package leitstand.robot.v1;
+
+// A coordinate frame a waypoint can be expressed in. Mirrors the cases of the
+// Waypoint oneof in mission.proto; declared as an enum here so a robot can
+// enumerate the frames it supports. Keep in sync with Waypoint.
+enum WaypointKind {
+  // No frame; ignored.
+  WAYPOINT_KIND_UNSPECIFIED = 0;
+  // The WGS84 geographic (GPS) frame.
+  WAYPOINT_KIND_WGS84 = 1;
+  // A Site's local Cartesian frame.
+  WAYPOINT_KIND_SITE_LOCAL = 2;
+}
+
+// Capabilities specific to executing NAVIGATION stages.
+message NavigationCapability {
+  // The coordinate frames the robot can navigate in. A mission whose waypoints
+  // use a frame absent from this set is rejected at dispatch.
+  repeated WaypointKind supported_waypoint_kinds = 1;
+}
+
+// One supported stage kind together with its kind-specific capabilities. The
+// set oneof case names the supported kind; a factsheet must not repeat a kind.
+message StageCapability {
+  // The kind-specific capability detail; the set case is the supported kind.
+  oneof detail {
+    // Capability for the NAVIGATION stage kind.
+    NavigationCapability navigation = 1;
+  }
+}
+
+// What a robot can do, fetched by the backend to pre-validate dispatch. The set
+// of supported stage kinds is exactly the kinds present in stage_capabilities.
+message Factsheet {
+  // One entry per supported stage kind, with that kind's capabilities.
+  repeated StageCapability stage_capabilities = 1;
+}

@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "leitstand-robot-contract"
+version = "0.1.0"
+description = "Generated Python stubs for the leitstand backend <-> robot Protobuf contract (leitstand.robot.v1)."
+requires-python = ">=3.10"
+dependencies = [
+    "protobuf>=7.35.1",
+]
+
+[tool.setuptools]
+package-dir = { "" = "gen/python" }
+
+[tool.setuptools.packages.find]
+where = ["gen/python"]
+# buf.validate gencode is vendored (generated from the pinned protovalidate
+# module) so the package is self-contained; runtime validation via the
+# optional protovalidate package is a consumer choice.
+include = ["leitstand*", "buf*"]
+namespaces = true

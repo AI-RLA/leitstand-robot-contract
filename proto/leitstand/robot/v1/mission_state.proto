@@ -1,0 +1,126 @@
+// Mission execution state, reported robot -> backend.
+//
+// Execution state only: the backend owns the mission lifecycle and derives
+// lifecycle transitions from this stream; no lifecycle status is carried
+// here. The reporting robot is identified by the transport key, not by a
+// message field.
+
+syntax = "proto3";
+
+package leitstand.robot.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+// Execution state of a single stage as the robot runs it.
+enum StageStatus {
+  // No status set; consumers must treat the stage state as unknown.
+  STAGE_STATUS_UNSPECIFIED = 0;
+  // The stage has not started yet.
+  STAGE_STATUS_WAITING = 1;
+  // The stage is being prepared (frame switch, target setup).
+  STAGE_STATUS_INITIALIZING = 2;
+  // The stage is executing.
+  STAGE_STATUS_RUNNING = 3;
+  // The stage is suspended by a pause command.
+  STAGE_STATUS_PAUSED = 4;
+  // The stage completed successfully.
+  STAGE_STATUS_FINISHED = 5;
+  // The stage failed; details are reported in MissionState.errors.
+  STAGE_STATUS_FAILED = 6;
+}
+
+// The robot's execution status for a mission: live (RUNNING/PAUSED) or terminal
+// (SUCCEEDED/FAILED/CANCELLED). Execution truth only, never the mission lifecycle
+// status (DRAFT/ASSIGNED/DISPATCHED), which the backend owns and derives from this.
+enum MissionExecStatus {
+  // No status set; consumers must treat the frame's execution state as unknown.
+  MISSION_EXEC_STATUS_UNSPECIFIED = 0;
+  // The mission is executing.
+  MISSION_EXEC_STATUS_RUNNING = 1;
+  // The mission is suspended by a pause command.
+  MISSION_EXEC_STATUS_PAUSED = 2;
+  // The mission completed successfully (terminal).
+  MISSION_EXEC_STATUS_SUCCEEDED = 3;
+  // The mission failed (terminal); details are reported in MissionState.errors.
+  MISSION_EXEC_STATUS_FAILED = 4;
+  // The mission was cancelled by a CancelRequest (terminal).
+  MISSION_EXEC_STATUS_CANCELLED = 5;
+}
+
+// Severity of a reported error. Informational notices are not errors and
+// have no place in this enum.
+enum ErrorSeverity {
+  // No severity set; consumers must treat the error as FATAL.
+  ERROR_SEVERITY_UNSPECIFIED = 0;
+  // Degraded but execution continues.
+  ERROR_SEVERITY_WARNING = 1;
+  // Execution of the affected stage or mission cannot continue.
+  ERROR_SEVERITY_FATAL = 2;
+}
+
+// A key/value pair attaching context to an Error, such as the entity the
+// error refers to. A list rather than a map because one error may reference
+// several entities of the same type (the same key twice).
+message ErrorReference {
+  // Reference kind, for example "waypoint_id" or "status_code".
+  string key = 1;
+  // Reference value, for example the referenced entity's id.
+  string value = 2;
+}
+
+// A structured error report attached to a mission state frame.
+message Error {
+  // How severe the error is for the ongoing execution.
+  ErrorSeverity severity = 1;
+  // Stable, machine-readable error code for programmatic handling and message
+  // localization, never the human-readable description.
+  string type = 2;
+  // Context entities the error refers to.
+  repeated ErrorReference references = 3;
+  // Human-readable description for the operator.
+  string description = 4;
+}
+
+// The robot's view of a single stage's execution state.
+message StageState {
+  // UUID of the stage this state describes; the identity join against the
+  // dispatched Mission's stages.
+  string stage_id = 1 [(buf.validate.field).string.uuid = true];
+  // Current execution status of the stage.
+  StageStatus status = 2;
+  // When the robot started executing the stage. Absent until started.
+  optional google.protobuf.Timestamp started_at = 3;
+  // When the stage reached a terminal status. Absent until then.
+  optional google.protobuf.Timestamp ended_at = 4;
+  // Fraction of the stage's work completed, 0.0 to 1.0.
+  double progress = 5 [(buf.validate.field).double = {
+    gte: 0
+    lte: 1
+  }];
+  // Stage-kind-specific completion stats, for example navigation time or
+  // distance travelled. An empty map means no result.
+  map<string, string> result = 6;
+}
+
+// Periodic and event-driven snapshot of a running mission.
+message MissionState {
+  // UUID of the mission this frame reports on.
+  string mission_id = 1 [(buf.validate.field).string.uuid = true];
+  // Monotone counter per transport key. The ordering and gap-detection
+  // signal; consumers must order frames by header_id, not by timestamp.
+  uint32 header_id = 2;
+  // When the robot produced this frame, by the robot's clock.
+  google.protobuf.Timestamp timestamp = 3;
+  // The robot's execution status for the mission.
+  MissionExecStatus exec_status = 4;
+  // 0-based position in Mission.stages of the stage currently executing, or
+  // whose on_cancel cleanup is running. Cleanup stages are nested, so their
+  // stage_ids never appear in the top-level list; during cleanup this index
+  // is the only top-level cursor.
+  uint32 current_stage_index = 5;
+  // Per-stage execution states, joined to the mission definition by stage_id.
+  repeated StageState stage_states = 6;
+  // Errors raised since execution began, newest last.
+  repeated Error errors = 7;
+}

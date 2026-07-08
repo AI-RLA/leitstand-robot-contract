@@ -1,0 +1,48 @@
+// Robot sensor telemetry, reported robot -> backend
+//
+// Distinct from mission execution state (mission_state.proto): this is raw
+// sensor data on its own Zenoh keys (leitstand/robot/<id>/{pose,battery}), at
+// its own rates. The reporting robot is identified by the transport key,
+// not by a message field.
+
+syntax = "proto3";
+
+package leitstand.robot.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+
+// A robot's geographic pose in the WGS84 frame. The frame is implicit (as in
+// WGS84Waypoint); another frame would be a distinct message.
+message Pose {
+  // When the robot measured this pose, by its own clock.
+  google.protobuf.Timestamp timestamp = 1;
+  // Degrees latitude, WGS84.
+  double lat = 2 [(buf.validate.field).double = {
+    gte: -90
+    lte: 90
+  }];
+  // Degrees longitude, WGS84.
+  double lon = 3 [(buf.validate.field).double = {
+    gte: -180
+    lte: 180
+  }];
+  // Heading in degrees clockwise from true north (compass bearing), in
+  // [0, 360). Absent when the robot cannot determine heading.
+  optional double heading_deg = 4 [(buf.validate.field).double = {
+    gte: 0
+    lt: 360
+  }];
+  // 1-sigma horizontal position accuracy in meters. Absent when unknown.
+  optional double horizontal_accuracy_m = 5 [(buf.validate.field).double = {gte: 0}];
+}
+
+// A robot's battery state.
+message Battery {
+  // When the robot read this battery state, by its own clock.
+  google.protobuf.Timestamp timestamp = 1;
+  // State of charge, whole percent in [0, 100].
+  uint32 battery_pct = 2 [(buf.validate.field).uint32 = {lte: 100}];
+  // True while the battery is charging.
+  bool charging = 3;
+}

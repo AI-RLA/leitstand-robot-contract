@@ -1,0 +1,142 @@
+// The mission model and the commands acting on it, sent backend -> robot.
+//
+// This is the robot's view of a mission. Backend bookkeeping (name,
+// description, timestamps, lifecycle status) is deliberately absent: the
+// backend owns the mission lifecycle and the robot only needs what it must
+// execute. The target robot is identified by the transport key, not by a
+// message field.
+
+syntax = "proto3";
+
+package leitstand.robot.v1;
+
+import "buf/validate/validate.proto";
+
+// A waypoint anchored in the WGS84 geographic frame.
+message WGS84Waypoint {
+  // Degrees latitude, WGS84.
+  double lat = 1 [(buf.validate.field).double = {
+    gte: -90
+    lte: 90
+  }];
+  // Degrees longitude, WGS84.
+  double lon = 2 [(buf.validate.field).double = {
+    gte: -180
+    lte: 180
+  }];
+  // Target robot heading in degrees, clockwise from true north (compass
+  // bearing), in [0, 360). Matches the Pose channel's heading convention.
+  // Absent means the heading at the waypoint is unconstrained.
+  optional double heading_deg = 3 [(buf.validate.field).double = {
+    gte: 0
+    lt: 360
+  }];
+}
+
+// A waypoint expressed in a Site's local Cartesian frame.
+message SiteLocalWaypoint {
+  // UUID of the Site whose local frame this waypoint uses. The robot resolves
+  // it to a locally provisioned map.
+  string site_id = 1 [(buf.validate.field).string.uuid = true];
+  // Meters along the site's local +x axis.
+  double x = 2;
+  // Meters along the site's local +y axis.
+  double y = 3;
+  // Target robot heading in radians, counterclockwise from the site's local
+  // +x axis. Absent means the heading at the waypoint is unconstrained.
+  optional double theta = 4;
+}
+
+// A navigation target in exactly one coordinate frame.
+message Waypoint {
+  // The coordinate frame this waypoint is expressed in.
+  oneof kind {
+    // A target in the WGS84 geographic frame.
+    WGS84Waypoint wgs84 = 1;
+    // A target in a Site's local Cartesian frame.
+    SiteLocalWaypoint site_local = 2;
+  }
+}
+
+// The operation a Stage represents. Open enum: values are backend-owned and
+// added additively; a robot receiving an unknown kind must reject the mission
+// rather than execute an unrecognized operation.
+enum StageKind {
+  // No kind set; receivers must reject the mission.
+  STAGE_KIND_UNSPECIFIED = 0;
+  // Drive through an ordered list of waypoints.
+  STAGE_KIND_NAVIGATION = 1;
+}
+
+// Drives the robot through an ordered list of waypoints.
+message NavigationStage {
+  // Ordered waypoints to traverse. Must be non-empty, and all waypoints in
+  // one stage must share their coordinate frame; the backend validates both before
+  // dispatch, but receivers should also reject violations.
+  repeated Waypoint waypoints = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// One step of a mission: a kind discriminator plus the matching typed payload.
+message Stage {
+  // UUID identifying this stage within the mission. Stage state reports
+  // (StageState in mission_state.proto) join on this id.
+  string stage_id = 1 [(buf.validate.field).string.uuid = true];
+  // The stage's operation kind. An explicit field (not just the oneof) lets a
+  // receiver reject an unknown kind by value. Receivers must reject the mission
+  // when the kind is unknown or does not match the set payload case.
+  StageKind kind = 2;
+  // The kind-specific payload. Exactly one case is set, and it must correspond
+  // to kind.
+  oneof payload {
+    // Payload for STAGE_KIND_NAVIGATION.
+    NavigationStage navigation = 3;
+  }
+  // Cleanup stages executed sequentially when this stage is cancelled.
+  // Cleanup stages are themselves non-cancellable.
+  repeated Stage on_cancel = 4;
+}
+
+// An ordered sequence of stages to be executed by a single robot.
+message Mission {
+  // UUID identifying the mission across backend, robot, and state reports.
+  string mission_id = 1 [(buf.validate.field).string.uuid = true];
+  // The stages to execute, in order. Must be non-empty.
+  repeated Stage stages = 2 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// Backend -> robot: execute the given mission.
+message MissionDispatchRequest {
+  // Correlation id for a single dispatch attempt, used for request tracing.
+  string dispatch_id = 1 [(buf.validate.field).string.min_len = 1];
+  // The mission to execute.
+  Mission mission = 2;
+}
+
+// Robot -> backend: accept or reject a dispatch. Fail-closed: an absent or
+// unparseable reply is treated by the backend as a rejection.
+message MissionDispatchResponse {
+  // True when the robot accepted the mission for execution.
+  bool accepted = 1;
+  // Human-readable rejection cause. Required when accepted is false.
+  optional string reason = 2;
+}
+
+// How the robot should wind down a cancelled mission.
+enum CancelMode {
+  // No mode set; treated as GRACEFUL.
+  CANCEL_MODE_UNSPECIFIED = 0;
+  // Finish the current stage, run its on_cancel cleanup, then stop.
+  CANCEL_MODE_GRACEFUL = 1;
+  // Abort the current stage immediately, then run its on_cancel cleanup.
+  CANCEL_MODE_IMMEDIATE = 2;
+}
+
+// Backend -> robot: cancel the active mission. Idempotent; a cancel for a
+// mission the robot is not running has no effect.
+message CancelRequest {
+  // UUID of the mission to cancel. Guards against cancelling a successor
+  // mission when the request arrives late.
+  string mission_id = 1 [(buf.validate.field).string.uuid = true];
+  // The wind-down behavior. UNSPECIFIED is treated as GRACEFUL.
+  CancelMode mode = 2;
+}

@@ -1,0 +1,14 @@
+version: v2
+modules:
+  - path: proto
+deps:
+  - buf.build/bufbuild/protovalidate
+lint:
+  use:
+    - STANDARD
+    # Vendor-facing contract: every element must carry documentation
+    # (rendered by BSR / doc generators from leading comments).
+    - COMMENTS
+breaking:
+  use:
+    - FILE
