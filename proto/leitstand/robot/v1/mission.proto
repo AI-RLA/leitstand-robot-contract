@@ -66,6 +66,8 @@ enum StageKind {
   STAGE_KIND_UNSPECIFIED = 0;
   // Drive through an ordered list of waypoints.
   STAGE_KIND_NAVIGATION = 1;
+  // Cover a field by driving its swaths and the turns joining them.
+  STAGE_KIND_COVERAGE = 2;
 }
 
 // Drives the robot through an ordered list of waypoints.
@@ -74,6 +76,33 @@ message NavigationStage {
   // one stage must share their coordinate frame; the backend validates both before
   // dispatch, but receivers should also reject violations.
   repeated Waypoint waypoints = 1 [(buf.validate.field).repeated.min_items = 1];
+}
+
+// Whether a segment works the ground beneath it or only crosses it.
+enum SegmentKind {
+  // No kind set; receivers must reject the mission.
+  SEGMENT_KIND_UNSPECIFIED = 0;
+  // One pass of continuous work.
+  SEGMENT_KIND_SWATH = 1;
+  // A swath-to-swath turning, driven in the headland.
+  SEGMENT_KIND_TURN = 2;
+}
+
+// One swath across the field, or the turn joining two of them.
+message Segment {
+  // Which type this segment is.
+  SegmentKind kind = 1;
+  // The line to drive, in order. Two points fix a straight run; a curve needs
+  // enough of them to hold its shape.
+  repeated Waypoint geometry = 2 [(buf.validate.field).repeated.min_items = 2];
+}
+
+// Covers a field by driving its swaths in order, each reached by the turn
+// before it. Concatenating the segments gives the whole drivable line;
+// consecutive ones share an endpoint, which a receiver joining them skips.
+message CoverageStage {
+  // The segments to drive, in order. Must be non-empty.
+  repeated Segment segments = 1 [(buf.validate.field).repeated.min_items = 1];
 }
 
 // One step of a mission: a kind discriminator plus the matching typed payload.
@@ -90,6 +119,8 @@ message Stage {
   oneof payload {
     // Payload for STAGE_KIND_NAVIGATION.
     NavigationStage navigation = 3;
+    // Payload for STAGE_KIND_COVERAGE.
+    CoverageStage coverage = 5;
   }
   // Cleanup stages executed sequentially when this stage is cancelled.
   // Cleanup stages are themselves non-cancellable.

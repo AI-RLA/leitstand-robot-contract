@@ -12,6 +12,13 @@ class StageKind(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
     STAGE_KIND_UNSPECIFIED: _ClassVar[StageKind]
     STAGE_KIND_NAVIGATION: _ClassVar[StageKind]
+    STAGE_KIND_COVERAGE: _ClassVar[StageKind]
+
+class SegmentKind(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
+    __slots__ = ()
+    SEGMENT_KIND_UNSPECIFIED: _ClassVar[SegmentKind]
+    SEGMENT_KIND_SWATH: _ClassVar[SegmentKind]
+    SEGMENT_KIND_TURN: _ClassVar[SegmentKind]
 
 class CancelMode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
@@ -20,6 +27,10 @@ class CancelMode(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     CANCEL_MODE_IMMEDIATE: _ClassVar[CancelMode]
 STAGE_KIND_UNSPECIFIED: StageKind
 STAGE_KIND_NAVIGATION: StageKind
+STAGE_KIND_COVERAGE: StageKind
+SEGMENT_KIND_UNSPECIFIED: SegmentKind
+SEGMENT_KIND_SWATH: SegmentKind
+SEGMENT_KIND_TURN: SegmentKind
 CANCEL_MODE_UNSPECIFIED: CancelMode
 CANCEL_MODE_GRACEFUL: CancelMode
 CANCEL_MODE_IMMEDIATE: CancelMode
@@ -60,17 +71,33 @@ class NavigationStage(_message.Message):
     waypoints: _containers.RepeatedCompositeFieldContainer[Waypoint]
     def __init__(self, waypoints: _Optional[_Iterable[_Union[Waypoint, _Mapping]]] = ...) -> None: ...
 
+class Segment(_message.Message):
+    __slots__ = ("kind", "geometry")
+    KIND_FIELD_NUMBER: _ClassVar[int]
+    GEOMETRY_FIELD_NUMBER: _ClassVar[int]
+    kind: SegmentKind
+    geometry: _containers.RepeatedCompositeFieldContainer[Waypoint]
+    def __init__(self, kind: _Optional[_Union[SegmentKind, str]] = ..., geometry: _Optional[_Iterable[_Union[Waypoint, _Mapping]]] = ...) -> None: ...
+
+class CoverageStage(_message.Message):
+    __slots__ = ("segments",)
+    SEGMENTS_FIELD_NUMBER: _ClassVar[int]
+    segments: _containers.RepeatedCompositeFieldContainer[Segment]
+    def __init__(self, segments: _Optional[_Iterable[_Union[Segment, _Mapping]]] = ...) -> None: ...
+
 class Stage(_message.Message):
-    __slots__ = ("stage_id", "kind", "navigation", "on_cancel")
+    __slots__ = ("stage_id", "kind", "navigation", "coverage", "on_cancel")
     STAGE_ID_FIELD_NUMBER: _ClassVar[int]
     KIND_FIELD_NUMBER: _ClassVar[int]
     NAVIGATION_FIELD_NUMBER: _ClassVar[int]
+    COVERAGE_FIELD_NUMBER: _ClassVar[int]
     ON_CANCEL_FIELD_NUMBER: _ClassVar[int]
     stage_id: str
     kind: StageKind
     navigation: NavigationStage
+    coverage: CoverageStage
     on_cancel: _containers.RepeatedCompositeFieldContainer[Stage]
-    def __init__(self, stage_id: _Optional[str] = ..., kind: _Optional[_Union[StageKind, str]] = ..., navigation: _Optional[_Union[NavigationStage, _Mapping]] = ..., on_cancel: _Optional[_Iterable[_Union[Stage, _Mapping]]] = ...) -> None: ...
+    def __init__(self, stage_id: _Optional[str] = ..., kind: _Optional[_Union[StageKind, str]] = ..., navigation: _Optional[_Union[NavigationStage, _Mapping]] = ..., coverage: _Optional[_Union[CoverageStage, _Mapping]] = ..., on_cancel: _Optional[_Iterable[_Union[Stage, _Mapping]]] = ...) -> None: ...
 
 class Mission(_message.Message):
     __slots__ = ("mission_id", "stages")
