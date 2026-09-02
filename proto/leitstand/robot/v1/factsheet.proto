@@ -6,6 +6,8 @@ syntax = "proto3";
 
 package leitstand.robot.v1;
 
+import "buf/validate/validate.proto";
+
 // A coordinate frame a waypoint can be expressed in. Mirrors the cases of the
 // Waypoint oneof in mission.proto; declared as an enum here so a robot can
 // enumerate the frames it supports. Keep in sync with Waypoint.
@@ -25,6 +27,13 @@ message NavigationCapability {
   repeated WaypointKind supported_waypoint_kinds = 1;
 }
 
+// Capabilities specific to executing COVERAGE stages. Declaring this claims the
+// machine will hold the swath line between its endpoints
+message CoverageCapability {
+  // The coordinate frames the robot can drive swaths in.
+  repeated WaypointKind supported_waypoint_kinds = 1;
+}
+
 // One supported stage kind together with its kind-specific capabilities. The
 // set oneof case names the supported kind; a factsheet must not repeat a kind.
 message StageCapability {
@@ -32,7 +41,18 @@ message StageCapability {
   oneof detail {
     // Capability for the NAVIGATION stage kind.
     NavigationCapability navigation = 1;
+    // Capability for the COVERAGE stage kind.
+    CoverageCapability coverage = 2;
   }
+}
+
+// The machine's own physical facts, which may be used to validate a mission
+message PhysicalParameters {
+  // Distance between the wheels in meters
+  double track_width_m = 1 [(buf.validate.field).double.gt = 0];
+  // Smallest radius the machine can turn through, in meters. Zero declares a
+  // machine that turns on the spot.
+  double min_turning_radius_m = 2 [(buf.validate.field).double.gte = 0];
 }
 
 // What a robot can do, fetched by the backend to pre-validate dispatch. The set
@@ -40,4 +60,6 @@ message StageCapability {
 message Factsheet {
   // One entry per supported stage kind, with that kind's capabilities.
   repeated StageCapability stage_capabilities = 1;
+  // The machines own physical facts.
+  PhysicalParameters physical_parameters = 2;
 }

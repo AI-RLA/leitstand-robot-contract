@@ -22,21 +22,30 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 
+from buf.validate import validate_pb2 as buf_dot_validate_dot_validate__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\"leitstand/robot/v1/factsheet.proto\x12\x12leitstand.robot.v1\"r\n\x14NavigationCapability\x12Z\n\x18supported_waypoint_kinds\x18\x01 \x03(\x0e\x32 .leitstand.robot.v1.WaypointKindR\x16supportedWaypointKinds\"g\n\x0fStageCapability\x12J\n\nnavigation\x18\x01 \x01(\x0b\x32(.leitstand.robot.v1.NavigationCapabilityH\x00R\nnavigationB\x08\n\x06\x64\x65tail\"_\n\tFactsheet\x12R\n\x12stage_capabilities\x18\x01 \x03(\x0b\x32#.leitstand.robot.v1.StageCapabilityR\x11stageCapabilities*d\n\x0cWaypointKind\x12\x1d\n\x19WAYPOINT_KIND_UNSPECIFIED\x10\x00\x12\x17\n\x13WAYPOINT_KIND_WGS84\x10\x01\x12\x1c\n\x18WAYPOINT_KIND_SITE_LOCAL\x10\x02\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\"leitstand/robot/v1/factsheet.proto\x12\x12leitstand.robot.v1\x1a\x1b\x62uf/validate/validate.proto\"r\n\x14NavigationCapability\x12Z\n\x18supported_waypoint_kinds\x18\x01 \x03(\x0e\x32 .leitstand.robot.v1.WaypointKindR\x16supportedWaypointKinds\"p\n\x12\x43overageCapability\x12Z\n\x18supported_waypoint_kinds\x18\x01 \x03(\x0e\x32 .leitstand.robot.v1.WaypointKindR\x16supportedWaypointKinds\"\xad\x01\n\x0fStageCapability\x12J\n\nnavigation\x18\x01 \x01(\x0b\x32(.leitstand.robot.v1.NavigationCapabilityH\x00R\nnavigation\x12\x44\n\x08\x63overage\x18\x02 \x01(\x0b\x32&.leitstand.robot.v1.CoverageCapabilityH\x00R\x08\x63overageB\x08\n\x06\x64\x65tail\"\x89\x01\n\x12PhysicalParameters\x12\x32\n\rtrack_width_m\x18\x01 \x01(\x01\x42\x0e\xbaH\x0b\x12\t!\x00\x00\x00\x00\x00\x00\x00\x00R\x0btrackWidthM\x12?\n\x14min_turning_radius_m\x18\x02 \x01(\x01\x42\x0e\xbaH\x0b\x12\t)\x00\x00\x00\x00\x00\x00\x00\x00R\x11minTurningRadiusM\"\xb8\x01\n\tFactsheet\x12R\n\x12stage_capabilities\x18\x01 \x03(\x0b\x32#.leitstand.robot.v1.StageCapabilityR\x11stageCapabilities\x12W\n\x13physical_parameters\x18\x02 \x01(\x0b\x32&.leitstand.robot.v1.PhysicalParametersR\x12physicalParameters*d\n\x0cWaypointKind\x12\x1d\n\x19WAYPOINT_KIND_UNSPECIFIED\x10\x00\x12\x17\n\x13WAYPOINT_KIND_WGS84\x10\x01\x12\x1c\n\x18WAYPOINT_KIND_SITE_LOCAL\x10\x02\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'leitstand.robot.v1.factsheet_pb2', _globals)
 if not _descriptor._USE_C_DESCRIPTORS:
   DESCRIPTOR._loaded_options = None
-  _globals['_WAYPOINTKIND']._serialized_start=376
-  _globals['_WAYPOINTKIND']._serialized_end=476
-  _globals['_NAVIGATIONCAPABILITY']._serialized_start=58
-  _globals['_NAVIGATIONCAPABILITY']._serialized_end=172
-  _globals['_STAGECAPABILITY']._serialized_start=174
-  _globals['_STAGECAPABILITY']._serialized_end=277
-  _globals['_FACTSHEET']._serialized_start=279
-  _globals['_FACTSHEET']._serialized_end=374
+  _globals['_PHYSICALPARAMETERS'].fields_by_name['track_width_m']._loaded_options = None
+  _globals['_PHYSICALPARAMETERS'].fields_by_name['track_width_m']._serialized_options = b'\272H\013\022\t!\000\000\000\000\000\000\000\000'
+  _globals['_PHYSICALPARAMETERS'].fields_by_name['min_turning_radius_m']._loaded_options = None
+  _globals['_PHYSICALPARAMETERS'].fields_by_name['min_turning_radius_m']._serialized_options = b'\272H\013\022\t)\000\000\000\000\000\000\000\000'
+  _globals['_WAYPOINTKIND']._serialized_start=820
+  _globals['_WAYPOINTKIND']._serialized_end=920
+  _globals['_NAVIGATIONCAPABILITY']._serialized_start=87
+  _globals['_NAVIGATIONCAPABILITY']._serialized_end=201
+  _globals['_COVERAGECAPABILITY']._serialized_start=203
+  _globals['_COVERAGECAPABILITY']._serialized_end=315
+  _globals['_STAGECAPABILITY']._serialized_start=318
+  _globals['_STAGECAPABILITY']._serialized_end=491
+  _globals['_PHYSICALPARAMETERS']._serialized_start=494
+  _globals['_PHYSICALPARAMETERS']._serialized_end=631
+  _globals['_FACTSHEET']._serialized_start=634
+  _globals['_FACTSHEET']._serialized_end=818
 # @@protoc_insertion_point(module_scope)
