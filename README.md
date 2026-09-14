@@ -56,3 +56,8 @@ buf format -d
 buf build
 buf generate    # regenerate gen/ and commit it
 ```
+
+## License
+
+Copyright 2026 Osnabrück University of Applied Sciences.
+Apache License 2.0, see [LICENSE](LICENSE).
