@@ -96,19 +96,19 @@ class StageState(_message.Message):
     def __init__(self, stage_id: _Optional[str] = ..., status: _Optional[_Union[StageStatus, str]] = ..., started_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., ended_at: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., progress: _Optional[float] = ..., result: _Optional[_Mapping[str, str]] = ...) -> None: ...
 
 class MissionState(_message.Message):
-    __slots__ = ("mission_id", "header_id", "timestamp", "exec_status", "current_stage_index", "stage_states", "errors")
-    MISSION_ID_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ("run_id", "header_id", "timestamp", "exec_status", "current_stage_index", "stage_states", "errors")
+    RUN_ID_FIELD_NUMBER: _ClassVar[int]
     HEADER_ID_FIELD_NUMBER: _ClassVar[int]
     TIMESTAMP_FIELD_NUMBER: _ClassVar[int]
     EXEC_STATUS_FIELD_NUMBER: _ClassVar[int]
     CURRENT_STAGE_INDEX_FIELD_NUMBER: _ClassVar[int]
     STAGE_STATES_FIELD_NUMBER: _ClassVar[int]
     ERRORS_FIELD_NUMBER: _ClassVar[int]
-    mission_id: str
+    run_id: str
     header_id: int
     timestamp: _timestamp_pb2.Timestamp
     exec_status: MissionExecStatus
     current_stage_index: int
     stage_states: _containers.RepeatedCompositeFieldContainer[StageState]
     errors: _containers.RepeatedCompositeFieldContainer[Error]
-    def __init__(self, mission_id: _Optional[str] = ..., header_id: _Optional[int] = ..., timestamp: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., exec_status: _Optional[_Union[MissionExecStatus, str]] = ..., current_stage_index: _Optional[int] = ..., stage_states: _Optional[_Iterable[_Union[StageState, _Mapping]]] = ..., errors: _Optional[_Iterable[_Union[Error, _Mapping]]] = ...) -> None: ...
+    def __init__(self, run_id: _Optional[str] = ..., header_id: _Optional[int] = ..., timestamp: _Optional[_Union[datetime.datetime, _timestamp_pb2.Timestamp, _Mapping]] = ..., exec_status: _Optional[_Union[MissionExecStatus, str]] = ..., current_stage_index: _Optional[int] = ..., stage_states: _Optional[_Iterable[_Union[StageState, _Mapping]]] = ..., errors: _Optional[_Iterable[_Union[Error, _Mapping]]] = ...) -> None: ...

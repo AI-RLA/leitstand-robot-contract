@@ -4,3 +4,4 @@ __pycache__/
 # Local tooling / environments.
 /.venv*/
 .vscode/
+build/

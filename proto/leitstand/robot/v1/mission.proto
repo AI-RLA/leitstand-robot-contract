@@ -129,8 +129,10 @@ message Stage {
 
 // An ordered sequence of stages to be executed by a single robot.
 message Mission {
-  // UUID identifying the mission across backend, robot, and state reports.
-  string mission_id = 1 [(buf.validate.field).string.uuid = true];
+  // UUID of this execution. Two dispatches of the same mission carry different
+  // run_ids. The robot uses it to recognise a re-delivered dispatch, to match a
+  // cancel, and to label its state reports.
+  string run_id = 1 [(buf.validate.field).string.uuid = true];
   // The stages to execute, in order. Must be non-empty.
   repeated Stage stages = 2 [(buf.validate.field).repeated.min_items = 1];
 }
@@ -152,22 +154,24 @@ message MissionDispatchResponse {
   optional string reason = 2;
 }
 
-// How the robot should wind down a cancelled mission.
+// How the robot stops a cancelled run. Both modes stop within seconds; neither
+// finishes the stage or the swath under way.
 enum CancelMode {
   // No mode set; treated as GRACEFUL.
   CANCEL_MODE_UNSPECIFIED = 0;
-  // Finish the current stage, run its on_cancel cleanup, then stop.
+  // Come to a controlled stop at the next safe point (the current motion
+  // completed, the implement raised), then run the stage's on_cancel cleanup.
   CANCEL_MODE_GRACEFUL = 1;
-  // Abort the current stage immediately, then run its on_cancel cleanup.
+  // Stop at once, then run the stage's on_cancel cleanup.
   CANCEL_MODE_IMMEDIATE = 2;
 }
 
-// Backend -> robot: cancel the active mission. Idempotent; a cancel for a
-// mission the robot is not running has no effect.
+// Backend -> robot: cancel the active run. Idempotent; a cancel for a run
+// the robot is not executing has no effect.
 message CancelRequest {
-  // UUID of the mission to cancel. Guards against cancelling a successor
-  // mission when the request arrives late.
-  string mission_id = 1 [(buf.validate.field).string.uuid = true];
+  // UUID of the run to cancel. Guards against cancelling a successor run
+  // when the request arrives late.
+  string run_id = 1 [(buf.validate.field).string.uuid = true];
   // The wind-down behavior. UNSPECIFIED is treated as GRACEFUL.
   CancelMode mode = 2;
 }

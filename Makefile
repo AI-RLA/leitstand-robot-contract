@@ -2,7 +2,7 @@ BUF ?= buf
 # Pin matches buf.lock; bump both together.
 PROTOVALIDATE_REF = buf.build/bufbuild/protovalidate:50325440f8f24053b047484a6bf60b76
 
-.PHONY: gen lint format format-check build check sync
+.PHONY: gen lint format format-check build breaking check sync
 
 gen:
 	$(BUF) generate
@@ -19,6 +19,10 @@ format-check:
 
 build:
 	$(BUF) build -o /dev/null
+
+# Compares with the last tag. On 0.x a reported break is allowed when it is documented.
+breaking:
+	$(BUF) breaking --against '.git#tag=$(shell git describe --tags --abbrev=0)'
 
 check: lint format-check build
 

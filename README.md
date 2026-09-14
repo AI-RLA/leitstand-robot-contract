@@ -36,9 +36,10 @@ no message carries a robot id. Payloads are proto canonical JSON.
 A conforming robot must:
 
 - Reject the entire mission when a stage has an unknown kind or empty waypoints.
-- Treat dispatch as idempotent on `mission_id`: re-dispatching the running
-  mission is acknowledged without re-execution; dispatching a different mission
-  while one is running is rejected.
+- Treat dispatch as idempotent on `run_id`: re-dispatching the run being
+  executed is acknowledged without re-execution; dispatching a different run
+  while one is running is rejected. A `run_id` names one execution, so a second
+  run of the same mission is a new job with a new id.
 - Order `MissionState` frames by `header_id`.
 
 ## Versioning

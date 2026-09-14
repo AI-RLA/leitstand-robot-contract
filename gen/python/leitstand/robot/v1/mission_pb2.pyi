@@ -100,12 +100,12 @@ class Stage(_message.Message):
     def __init__(self, stage_id: _Optional[str] = ..., kind: _Optional[_Union[StageKind, str]] = ..., navigation: _Optional[_Union[NavigationStage, _Mapping]] = ..., coverage: _Optional[_Union[CoverageStage, _Mapping]] = ..., on_cancel: _Optional[_Iterable[_Union[Stage, _Mapping]]] = ...) -> None: ...
 
 class Mission(_message.Message):
-    __slots__ = ("mission_id", "stages")
-    MISSION_ID_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ("run_id", "stages")
+    RUN_ID_FIELD_NUMBER: _ClassVar[int]
     STAGES_FIELD_NUMBER: _ClassVar[int]
-    mission_id: str
+    run_id: str
     stages: _containers.RepeatedCompositeFieldContainer[Stage]
-    def __init__(self, mission_id: _Optional[str] = ..., stages: _Optional[_Iterable[_Union[Stage, _Mapping]]] = ...) -> None: ...
+    def __init__(self, run_id: _Optional[str] = ..., stages: _Optional[_Iterable[_Union[Stage, _Mapping]]] = ...) -> None: ...
 
 class MissionDispatchRequest(_message.Message):
     __slots__ = ("dispatch_id", "mission")
@@ -124,9 +124,9 @@ class MissionDispatchResponse(_message.Message):
     def __init__(self, accepted: _Optional[bool] = ..., reason: _Optional[str] = ...) -> None: ...
 
 class CancelRequest(_message.Message):
-    __slots__ = ("mission_id", "mode")
-    MISSION_ID_FIELD_NUMBER: _ClassVar[int]
+    __slots__ = ("run_id", "mode")
+    RUN_ID_FIELD_NUMBER: _ClassVar[int]
     MODE_FIELD_NUMBER: _ClassVar[int]
-    mission_id: str
+    run_id: str
     mode: CancelMode
-    def __init__(self, mission_id: _Optional[str] = ..., mode: _Optional[_Union[CancelMode, str]] = ...) -> None: ...
+    def __init__(self, run_id: _Optional[str] = ..., mode: _Optional[_Union[CancelMode, str]] = ...) -> None: ...

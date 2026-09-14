@@ -105,8 +105,9 @@ message StageState {
 
 // Periodic and event-driven snapshot of a running mission.
 message MissionState {
-  // UUID of the mission this frame reports on.
-  string mission_id = 1 [(buf.validate.field).string.uuid = true];
+  // UUID of the run this frame reports on, as carried by the Mission that
+  // was dispatched.
+  string run_id = 1 [(buf.validate.field).string.uuid = true];
   // Monotone counter per transport key. The ordering and gap-detection
   // signal; consumers must order frames by header_id, not by timestamp.
   uint32 header_id = 2;

@@ -1,0 +1,6 @@
+# Consumed as a build context by the backend image, which needs only the installable package.
+*
+!pyproject.toml
+!gen/
+!proto/
+!README.md

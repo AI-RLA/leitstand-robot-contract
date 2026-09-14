@@ -25,7 +25,7 @@ _sym_db = _symbol_database.Default()
 from buf.validate import validate_pb2 as buf_dot_validate_dot_validate__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n leitstand/robot/v1/mission.proto\x12\x12leitstand.robot.v1\x1a\x1b\x62uf/validate/validate.proto\"\xb4\x01\n\rWGS84Waypoint\x12)\n\x03lat\x18\x01 \x01(\x01\x42\x17\xbaH\x14\x12\x12\x19\x00\x00\x00\x00\x00\x80V@)\x00\x00\x00\x00\x00\x80V\xc0R\x03lat\x12)\n\x03lon\x18\x02 \x01(\x01\x42\x17\xbaH\x14\x12\x12\x19\x00\x00\x00\x00\x00\x80\x66@)\x00\x00\x00\x00\x00\x80\x66\xc0R\x03lon\x12=\n\x0bheading_deg\x18\x03 \x01(\x01\x42\x17\xbaH\x14\x12\x12\x11\x00\x00\x00\x00\x00\x80v@)\x00\x00\x00\x00\x00\x00\x00\x00H\x00R\nheadingDeg\x88\x01\x01\x42\x0e\n\x0c_heading_deg\"w\n\x11SiteLocalWaypoint\x12!\n\x07site_id\x18\x01 \x01(\tB\x08\xbaH\x05r\x03\xb0\x01\x01R\x06siteId\x12\x0c\n\x01x\x18\x02 \x01(\x01R\x01x\x12\x0c\n\x01y\x18\x03 \x01(\x01R\x01y\x12\x19\n\x05theta\x18\x04 \x01(\x01H\x00R\x05theta\x88\x01\x01\x42\x08\n\x06_theta\"\x95\x01\n\x08Waypoint\x12\x39\n\x05wgs84\x18\x01 \x01(\x0b\x32!.leitstand.robot.v1.WGS84WaypointH\x00R\x05wgs84\x12\x46\n\nsite_local\x18\x02 \x01(\x0b\x32%.leitstand.robot.v1.SiteLocalWaypointH\x00R\tsiteLocalB\x06\n\x04kind\"W\n\x0fNavigationStage\x12\x44\n\twaypoints\x18\x01 \x03(\x0b\x32\x1c.leitstand.robot.v1.WaypointB\x08\xbaH\x05\x92\x01\x02\x08\x01R\twaypoints\"\x82\x01\n\x07Segment\x12\x33\n\x04kind\x18\x01 \x01(\x0e\x32\x1f.leitstand.robot.v1.SegmentKindR\x04kind\x12\x42\n\x08geometry\x18\x02 \x03(\x0b\x32\x1c.leitstand.robot.v1.WaypointB\x08\xbaH\x05\x92\x01\x02\x08\x02R\x08geometry\"R\n\rCoverageStage\x12\x41\n\x08segments\x18\x01 \x03(\x0b\x32\x1b.leitstand.robot.v1.SegmentB\x08\xbaH\x05\x92\x01\x02\x08\x01R\x08segments\"\xaa\x02\n\x05Stage\x12#\n\x08stage_id\x18\x01 \x01(\tB\x08\xbaH\x05r\x03\xb0\x01\x01R\x07stageId\x12\x31\n\x04kind\x18\x02 \x01(\x0e\x32\x1d.leitstand.robot.v1.StageKindR\x04kind\x12\x45\n\nnavigation\x18\x03 \x01(\x0b\x32#.leitstand.robot.v1.NavigationStageH\x00R\nnavigation\x12?\n\x08\x63overage\x18\x05 \x01(\x0b\x32!.leitstand.robot.v1.CoverageStageH\x00R\x08\x63overage\x12\x36\n\ton_cancel\x18\x04 \x03(\x0b\x32\x19.leitstand.robot.v1.StageR\x08onCancelB\t\n\x07payload\"o\n\x07Mission\x12\'\n\nmission_id\x18\x01 \x01(\tB\x08\xbaH\x05r\x03\xb0\x01\x01R\tmissionId\x12;\n\x06stages\x18\x02 \x03(\x0b\x32\x19.leitstand.robot.v1.StageB\x08\xbaH\x05\x92\x01\x02\x08\x01R\x06stages\"y\n\x16MissionDispatchRequest\x12(\n\x0b\x64ispatch_id\x18\x01 \x01(\tB\x07\xbaH\x04r\x02\x10\x01R\ndispatchId\x12\x35\n\x07mission\x18\x02 \x01(\x0b\x32\x1b.leitstand.robot.v1.MissionR\x07mission\"]\n\x17MissionDispatchResponse\x12\x1a\n\x08\x61\x63\x63\x65pted\x18\x01 \x01(\x08R\x08\x61\x63\x63\x65pted\x12\x1b\n\x06reason\x18\x02 \x01(\tH\x00R\x06reason\x88\x01\x01\x42\t\n\x07_reason\"l\n\rCancelRequest\x12\'\n\nmission_id\x18\x01 \x01(\tB\x08\xbaH\x05r\x03\xb0\x01\x01R\tmissionId\x12\x32\n\x04mode\x18\x02 \x01(\x0e\x32\x1e.leitstand.robot.v1.CancelModeR\x04mode*[\n\tStageKind\x12\x1a\n\x16STAGE_KIND_UNSPECIFIED\x10\x00\x12\x19\n\x15STAGE_KIND_NAVIGATION\x10\x01\x12\x17\n\x13STAGE_KIND_COVERAGE\x10\x02*Z\n\x0bSegmentKind\x12\x1c\n\x18SEGMENT_KIND_UNSPECIFIED\x10\x00\x12\x16\n\x12SEGMENT_KIND_SWATH\x10\x01\x12\x15\n\x11SEGMENT_KIND_TURN\x10\x02*^\n\nCancelMode\x12\x1b\n\x17\x43\x41NCEL_MODE_UNSPECIFIED\x10\x00\x12\x18\n\x14\x43\x41NCEL_MODE_GRACEFUL\x10\x01\x12\x19\n\x15\x43\x41NCEL_MODE_IMMEDIATE\x10\x02\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n leitstand/robot/v1/mission.proto\x12\x12leitstand.robot.v1\x1a\x1b\x62uf/validate/validate.proto\"\xb4\x01\n\rWGS84Waypoint\x12)\n\x03lat\x18\x01 \x01(\x01\x42\x17\xbaH\x14\x12\x12\x19\x00\x00\x00\x00\x00\x80V@)\x00\x00\x00\x00\x00\x80V\xc0R\x03lat\x12)\n\x03lon\x18\x02 \x01(\x01\x42\x17\xbaH\x14\x12\x12\x19\x00\x00\x00\x00\x00\x80\x66@)\x00\x00\x00\x00\x00\x80\x66\xc0R\x03lon\x12=\n\x0bheading_deg\x18\x03 \x01(\x01\x42\x17\xbaH\x14\x12\x12\x11\x00\x00\x00\x00\x00\x80v@)\x00\x00\x00\x00\x00\x00\x00\x00H\x00R\nheadingDeg\x88\x01\x01\x42\x0e\n\x0c_heading_deg\"w\n\x11SiteLocalWaypoint\x12!\n\x07site_id\x18\x01 \x01(\tB\x08\xbaH\x05r\x03\xb0\x01\x01R\x06siteId\x12\x0c\n\x01x\x18\x02 \x01(\x01R\x01x\x12\x0c\n\x01y\x18\x03 \x01(\x01R\x01y\x12\x19\n\x05theta\x18\x04 \x01(\x01H\x00R\x05theta\x88\x01\x01\x42\x08\n\x06_theta\"\x95\x01\n\x08Waypoint\x12\x39\n\x05wgs84\x18\x01 \x01(\x0b\x32!.leitstand.robot.v1.WGS84WaypointH\x00R\x05wgs84\x12\x46\n\nsite_local\x18\x02 \x01(\x0b\x32%.leitstand.robot.v1.SiteLocalWaypointH\x00R\tsiteLocalB\x06\n\x04kind\"W\n\x0fNavigationStage\x12\x44\n\twaypoints\x18\x01 \x03(\x0b\x32\x1c.leitstand.robot.v1.WaypointB\x08\xbaH\x05\x92\x01\x02\x08\x01R\twaypoints\"\x82\x01\n\x07Segment\x12\x33\n\x04kind\x18\x01 \x01(\x0e\x32\x1f.leitstand.robot.v1.SegmentKindR\x04kind\x12\x42\n\x08geometry\x18\x02 \x03(\x0b\x32\x1c.leitstand.robot.v1.WaypointB\x08\xbaH\x05\x92\x01\x02\x08\x02R\x08geometry\"R\n\rCoverageStage\x12\x41\n\x08segments\x18\x01 \x03(\x0b\x32\x1b.leitstand.robot.v1.SegmentB\x08\xbaH\x05\x92\x01\x02\x08\x01R\x08segments\"\xaa\x02\n\x05Stage\x12#\n\x08stage_id\x18\x01 \x01(\tB\x08\xbaH\x05r\x03\xb0\x01\x01R\x07stageId\x12\x31\n\x04kind\x18\x02 \x01(\x0e\x32\x1d.leitstand.robot.v1.StageKindR\x04kind\x12\x45\n\nnavigation\x18\x03 \x01(\x0b\x32#.leitstand.robot.v1.NavigationStageH\x00R\nnavigation\x12?\n\x08\x63overage\x18\x05 \x01(\x0b\x32!.leitstand.robot.v1.CoverageStageH\x00R\x08\x63overage\x12\x36\n\ton_cancel\x18\x04 \x03(\x0b\x32\x19.leitstand.robot.v1.StageR\x08onCancelB\t\n\x07payload\"g\n\x07Mission\x12\x1f\n\x06run_id\x18\x01 \x01(\tB\x08\xbaH\x05r\x03\xb0\x01\x01R\x05runId\x12;\n\x06stages\x18\x02 \x03(\x0b\x32\x19.leitstand.robot.v1.StageB\x08\xbaH\x05\x92\x01\x02\x08\x01R\x06stages\"y\n\x16MissionDispatchRequest\x12(\n\x0b\x64ispatch_id\x18\x01 \x01(\tB\x07\xbaH\x04r\x02\x10\x01R\ndispatchId\x12\x35\n\x07mission\x18\x02 \x01(\x0b\x32\x1b.leitstand.robot.v1.MissionR\x07mission\"]\n\x17MissionDispatchResponse\x12\x1a\n\x08\x61\x63\x63\x65pted\x18\x01 \x01(\x08R\x08\x61\x63\x63\x65pted\x12\x1b\n\x06reason\x18\x02 \x01(\tH\x00R\x06reason\x88\x01\x01\x42\t\n\x07_reason\"d\n\rCancelRequest\x12\x1f\n\x06run_id\x18\x01 \x01(\tB\x08\xbaH\x05r\x03\xb0\x01\x01R\x05runId\x12\x32\n\x04mode\x18\x02 \x01(\x0e\x32\x1e.leitstand.robot.v1.CancelModeR\x04mode*[\n\tStageKind\x12\x1a\n\x16STAGE_KIND_UNSPECIFIED\x10\x00\x12\x19\n\x15STAGE_KIND_NAVIGATION\x10\x01\x12\x17\n\x13STAGE_KIND_COVERAGE\x10\x02*Z\n\x0bSegmentKind\x12\x1c\n\x18SEGMENT_KIND_UNSPECIFIED\x10\x00\x12\x16\n\x12SEGMENT_KIND_SWATH\x10\x01\x12\x15\n\x11SEGMENT_KIND_TURN\x10\x02*^\n\nCancelMode\x12\x1b\n\x17\x43\x41NCEL_MODE_UNSPECIFIED\x10\x00\x12\x18\n\x14\x43\x41NCEL_MODE_GRACEFUL\x10\x01\x12\x19\n\x15\x43\x41NCEL_MODE_IMMEDIATE\x10\x02\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -48,20 +48,20 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_COVERAGESTAGE'].fields_by_name['segments']._serialized_options = b'\272H\005\222\001\002\010\001'
   _globals['_STAGE'].fields_by_name['stage_id']._loaded_options = None
   _globals['_STAGE'].fields_by_name['stage_id']._serialized_options = b'\272H\005r\003\260\001\001'
-  _globals['_MISSION'].fields_by_name['mission_id']._loaded_options = None
-  _globals['_MISSION'].fields_by_name['mission_id']._serialized_options = b'\272H\005r\003\260\001\001'
+  _globals['_MISSION'].fields_by_name['run_id']._loaded_options = None
+  _globals['_MISSION'].fields_by_name['run_id']._serialized_options = b'\272H\005r\003\260\001\001'
   _globals['_MISSION'].fields_by_name['stages']._loaded_options = None
   _globals['_MISSION'].fields_by_name['stages']._serialized_options = b'\272H\005\222\001\002\010\001'
   _globals['_MISSIONDISPATCHREQUEST'].fields_by_name['dispatch_id']._loaded_options = None
   _globals['_MISSIONDISPATCHREQUEST'].fields_by_name['dispatch_id']._serialized_options = b'\272H\004r\002\020\001'
-  _globals['_CANCELREQUEST'].fields_by_name['mission_id']._loaded_options = None
-  _globals['_CANCELREQUEST'].fields_by_name['mission_id']._serialized_options = b'\272H\005r\003\260\001\001'
-  _globals['_STAGEKIND']._serialized_start=1589
-  _globals['_STAGEKIND']._serialized_end=1680
-  _globals['_SEGMENTKIND']._serialized_start=1682
-  _globals['_SEGMENTKIND']._serialized_end=1772
-  _globals['_CANCELMODE']._serialized_start=1774
-  _globals['_CANCELMODE']._serialized_end=1868
+  _globals['_CANCELREQUEST'].fields_by_name['run_id']._loaded_options = None
+  _globals['_CANCELREQUEST'].fields_by_name['run_id']._serialized_options = b'\272H\005r\003\260\001\001'
+  _globals['_STAGEKIND']._serialized_start=1573
+  _globals['_STAGEKIND']._serialized_end=1664
+  _globals['_SEGMENTKIND']._serialized_start=1666
+  _globals['_SEGMENTKIND']._serialized_end=1756
+  _globals['_CANCELMODE']._serialized_start=1758
+  _globals['_CANCELMODE']._serialized_end=1852
   _globals['_WGS84WAYPOINT']._serialized_start=86
   _globals['_WGS84WAYPOINT']._serialized_end=266
   _globals['_SITELOCALWAYPOINT']._serialized_start=268
@@ -77,11 +77,11 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_STAGE']._serialized_start=848
   _globals['_STAGE']._serialized_end=1146
   _globals['_MISSION']._serialized_start=1148
-  _globals['_MISSION']._serialized_end=1259
-  _globals['_MISSIONDISPATCHREQUEST']._serialized_start=1261
-  _globals['_MISSIONDISPATCHREQUEST']._serialized_end=1382
-  _globals['_MISSIONDISPATCHRESPONSE']._serialized_start=1384
-  _globals['_MISSIONDISPATCHRESPONSE']._serialized_end=1477
-  _globals['_CANCELREQUEST']._serialized_start=1479
-  _globals['_CANCELREQUEST']._serialized_end=1587
+  _globals['_MISSION']._serialized_end=1251
+  _globals['_MISSIONDISPATCHREQUEST']._serialized_start=1253
+  _globals['_MISSIONDISPATCHREQUEST']._serialized_end=1374
+  _globals['_MISSIONDISPATCHRESPONSE']._serialized_start=1376
+  _globals['_MISSIONDISPATCHRESPONSE']._serialized_end=1469
+  _globals['_CANCELREQUEST']._serialized_start=1471
+  _globals['_CANCELREQUEST']._serialized_end=1571
 # @@protoc_insertion_point(module_scope)
