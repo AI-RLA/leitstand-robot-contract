@@ -166,8 +166,8 @@ enum CancelMode {
   CANCEL_MODE_IMMEDIATE = 2;
 }
 
-// Backend -> robot: cancel the active run. Idempotent; a cancel for a run
-// the robot is not executing has no effect.
+// Backend -> robot: cancel the active run. Answered with a ControlResponse; a cancel for a run
+// the robot is not executing changes nothing and is refused with NOT_EXECUTING_RUN.
 message CancelRequest {
   // UUID of the run to cancel. Guards against cancelling a successor run
   // when the request arrives late.

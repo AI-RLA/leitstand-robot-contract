@@ -1,0 +1,33 @@
+// Commands about the run a robot is executing, and the receipts they are answered with.
+syntax = "proto3";
+
+package leitstand.robot.v1;
+
+import "buf/validate/validate.proto";
+
+// Backend -> robot: a command about the run being executed. The reply says whether the robot
+// took it; what happened afterwards is reported on mission/state.
+message ControlRequest {
+  // UUID of the run the command is about.
+  string run_id = 1 [(buf.validate.field).string.uuid = true];
+}
+
+// Why a command was not applied.
+enum ControlRefusal {
+  // No reason given.
+  CONTROL_REFUSAL_UNSPECIFIED = 0;
+  // The robot is not executing the run the command names.
+  CONTROL_REFUSAL_NOT_EXECUTING_RUN = 1;
+  // Any other reason; `reason` says which.
+  CONTROL_REFUSAL_OTHER = 2;
+}
+
+// Robot -> backend: whether a command was taken.
+message ControlResponse {
+  // True when the robot accepted the command for the run it is executing.
+  bool applied = 1;
+  // Free text for the operator when applied is false.
+  optional string reason = 2;
+  // The structured reason when applied is false; the backend acts on this, never on `reason`.
+  ControlRefusal refusal = 3;
+}

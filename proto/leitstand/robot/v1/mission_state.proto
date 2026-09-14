@@ -28,6 +28,10 @@ enum StageStatus {
   STAGE_STATUS_FINISHED = 5;
   // The stage failed; details are reported in MissionState.errors.
   STAGE_STATUS_FAILED = 6;
+  // The stage was interrupted by a cancel.
+  STAGE_STATUS_CANCELLED = 7;
+  // The stage was never started because the run ended before it.
+  STAGE_STATUS_SKIPPED = 8;
 }
 
 // The robot's execution status for a mission: live (RUNNING/PAUSED) or terminal

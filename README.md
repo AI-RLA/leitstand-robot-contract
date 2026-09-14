@@ -24,12 +24,16 @@ no message carries a robot id. Payloads are proto canonical JSON.
 | Message | Key | Zenoh op |
 |---|---|---|
 | MissionDispatchRequest / Response | `mission/_action/send_goal` | get |
-| CancelRequest | `mission/_action/cancel_goal` | get |
-| pause / resume | `instant/pause`, `instant/resume` | put |
+| CancelRequest / ControlResponse | `mission/_action/cancel_goal` | get |
+| ControlRequest / ControlResponse | `mission/_action/pause`, `mission/_action/resume` | get |
 | MissionState | `mission/state` | put |
 | Factsheet | `factsheet` | get |
 | Pose | `pose` | put |
 | Battery | `battery` | put |
+
+Two keys carry JSON rather than proto: `online` is a liveliness token (present means online),
+and `metadata` is a queryable answering `{"id": "<robot id>", "active_run_id": "<uuid>" | null}`,
+the run the robot is executing. A client that omits `active_run_id` is read as "unknown".
 
 ## Conformance
 
@@ -41,6 +45,16 @@ A conforming robot must:
   while one is running is rejected. A `run_id` names one execution, so a second
   run of the same mission is a new job with a new id.
 - Order `MissionState` frames by `header_id`.
+- Answer a pause, resume or cancel before acting on it, publish a `MissionState` frame as soon
+  as the command has been applied, and publish the terminal frame after any cleanup with every
+  stage's status. The backend believes a pause, resume or cancel only when `mission/state`
+  reports it; the reply is a receipt.
+- Reply within the backend's wait: 10 s for a dispatch, 5 s for a cancel, 3 s for a pause or
+  resume. Silence counts as not acknowledged.
+- Report a stage a cancel interrupted as `CANCELLED` and stages never started as `SKIPPED`.
+
+A reply to `cancel_goal` whose payload is empty or exactly `{}` is read as applied (backend 0.6.0
+and later); this reading exists for 0.3.0 clients only.
 
 ## Versioning
 

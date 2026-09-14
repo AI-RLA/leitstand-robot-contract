@@ -20,6 +20,8 @@ class StageStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     STAGE_STATUS_PAUSED: _ClassVar[StageStatus]
     STAGE_STATUS_FINISHED: _ClassVar[StageStatus]
     STAGE_STATUS_FAILED: _ClassVar[StageStatus]
+    STAGE_STATUS_CANCELLED: _ClassVar[StageStatus]
+    STAGE_STATUS_SKIPPED: _ClassVar[StageStatus]
 
 class MissionExecStatus(int, metaclass=_enum_type_wrapper.EnumTypeWrapper):
     __slots__ = ()
@@ -42,6 +44,8 @@ STAGE_STATUS_RUNNING: StageStatus
 STAGE_STATUS_PAUSED: StageStatus
 STAGE_STATUS_FINISHED: StageStatus
 STAGE_STATUS_FAILED: StageStatus
+STAGE_STATUS_CANCELLED: StageStatus
+STAGE_STATUS_SKIPPED: StageStatus
 MISSION_EXEC_STATUS_UNSPECIFIED: MissionExecStatus
 MISSION_EXEC_STATUS_RUNNING: MissionExecStatus
 MISSION_EXEC_STATUS_PAUSED: MissionExecStatus
