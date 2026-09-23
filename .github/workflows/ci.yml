@@ -1,0 +1,38 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: bufbuild/buf-action@v1
+        with:
+          version: 1.47.2
+          setup_only: true
+      - run: make check
+      # The committed stubs must match the protos.
+      - run: make sync
+
+  # A break is allowed before 1.0.0 when it is released as a minor version, so this job reports it
+  # on the pull request and is not a required check.
+  breaking:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0   # make breaking compares against the last tag
+      - uses: bufbuild/buf-action@v1
+        with:
+          version: 1.47.2
+          setup_only: true
+      - run: make breaking

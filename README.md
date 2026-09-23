@@ -58,7 +58,10 @@ and later); this reading exists for 0.3.0 clients only.
 
 ## Versioning
 
-Additive-only within `v1`; a breaking change means `v2`. Enforced by `buf breaking`.
+While the contract is at 0.x, the `leitstand.robot.v1` package may change incompatibly (breaking changes). Such a
+change gets a new minor version, and `buf breaking` flags it on the pull request. The backend and
+the robots reject fields they do not know, so they move to a new contract version together. From
+1.0.0 on, changes to `v1` are additive only, and an incompatible change becomes a `v2` package.
 
 ## Development
 
